@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="jquery.js"></script>
+</head>
+<body>
+<form action="" method="get">
+    账号<input type="text" placeholder="输入账号" name="user">
+    密码<input type="text" placeholder="输入密码" name="pass">
+    <input type="submit" >
+</form>
+</body>
+</html>
+<script>
+    // let sub=document.querySelector('input[type=submit]');
+    // sub.onclick=function (e) {
+    //     e.preventDefault();
+    //     let ajax = new XMLHttpRequest();
+    //     let str = "";
+    //     let input = document.querySelectorAll("input[type=text]");
+    //     input.forEach(function (val,index) {
+    //         str+=val.name +'='+val.value+"&"
+    // });
+    //     str.slice(0, -1);
+    //     ajax.open("get", "input.php?"+str, true);
+    //     ajax.send();
+    //     ajax.onreadystatechange = function () {
+    //         if (ajax.readyState == 4) {
+    //             if (ajax.status == 200) {
+    //                  console.log(ajax.response);
+    //             }
+    //         }
+    //     }
+    // }
+    //
+    // let sub=document.querySelector('input[type=submit]');
+    // sub.onclick=function (e) {
+    //     e.preventDefault();
+    //     $.ajax({
+    //         url: 'input.php',
+    //         type: 'get',
+    //         data: $('form').serialize(),
+    //         asynch: true,
+    //         dataType: 'text',
+    //         success: function (mes) {
+    //             console.log(mes)
+    //         }
+    //     })
+    // }
+
+
+    $.extend({
+        myajax:function (obj) {
+            let url=obj.url;
+            let type=obj.type;
+            let data=obj.data;
+            let asynch=obj.asynch;
+            let dataType=obj.dataType;
+            let success=obj.success;
+            var ret='';
+            var ajax=window.XMLHttpRequest?new XMLHttpRequest():new ActiveXObject('Microsoft.XMLHTTP');
+            if (type=='post'||type=='POST'){
+
+                ajax.open(type,url,asynch);
+                ajax.setRequestHeader('content-type','application/x-www-form-urlencoded')
+                ajax.send(data);
+            }else{
+                console.log(1)
+                ajax.open(type,url+'?'+data,asynch);
+                ajax.send();
+            }
+            ajax.onreadystatechange=function () {
+                if (ajax.readyState==4){
+                    if (ajax.status==200){
+                        let returnval=ajax.responseText
+                        success(returnval);
+                    }
+                }
+            }
+        }
+    })
+    $(':submit').click(function (e) {
+        e.preventDefault();
+        let input_user=document.querySelector('input[type=text]');
+        let input_pass=document.querySelector('input[type=password]');
+        let str=input_user.name+'='+input_user.value+'&'+input_pass.name+'='+input_pass.value;
+        $.myajax({url:'index.php',type:'post',data:str,asynch:true,dataType:'text',success:function (ms) {
+                console.log(ms);
+            }
+        })
+    })
+
+
+</script>
